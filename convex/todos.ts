@@ -1,3 +1,4 @@
+import { Id } from "./_generated/dataModel";
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
@@ -6,7 +7,7 @@ export const createTask = mutation({
         tasks: v.object({
             nestedArray: v.array(
                 v.object({
-                    _id: v.optional(v.string()),
+                    id: v.optional(v.string()),
                     task: v.string(),
                     note: v.string(),
                     date: v.string(),
@@ -29,30 +30,33 @@ export const getTasks = query({
 })
 
 export const getTaskById = query({
-    args: { _id: v.id("Tasks") },
+    args: { id: v.id("Tasks") },
     handler: async (ctx, args) => {
-        const task = await ctx.db.get(args._id)
+        const task = await ctx.db.get(args.id)
         console.log(task)
         return task
     }
 })
 
 
-export const updateTask = mutation({
-    args: { _id: v.id("Tasks") },
-    handler: async (ctx, args) => {
-        const { _id } = args
-        const updateTask = await ctx.db.patch(_id, {
-            nestedArray: [{
-                task: "new task",
-                note: "new note",
-                date: "New date",
-                time: "New time",
-                status: "New status"
-            }]
-        })
-        console.log(updateTask)
-    },
+export const updateTask = mutation(async ({ db }, { id, newTask, newNote, newDate, newTime, newStatus }: { id: Id<"Tasks">; newTask: string; newNote: string; newDate: string; newTime: string; newStatus: string }) => {
+    const taskData = await db.get(id)
+    if (!taskData) {
+        throw new Error("Task Not Found")
+    }
+    const updateNestedArray = taskData.nestedArray.map((items: any) => {
+        return {
+            ...items,
+            task: newTask,
+            note: newNote,
+            date: newDate,
+            time: newTime,
+            status: newStatus
+        }
+    })
+    await db.patch(id, {
+        nestedArray: updateNestedArray
+    })
 })
 
 

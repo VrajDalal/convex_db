@@ -5,7 +5,7 @@ export default defineSchema({
     Tasks: defineTable({
         nestedArray: v.array(
             v.object({
-                _id:  v.optional(v.string()),
+                id:  v.optional(v.string()),
                 text: v.optional(v.string()),
                 task: v.string(),
                 note: v.string(),
