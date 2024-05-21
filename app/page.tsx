@@ -26,7 +26,7 @@ export default function Home() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [currentTask, setCurrentTask] = useState<{ id: Id<"Tasks">, task: string, note: string, date: string, time: string, status: string } | null>(null)
   const [taskId, setTaskId] = useState<Id<"Tasks">>();
-
+  
   const createTaskMutation = useMutation(api.todos.createTask);
   const getAllTasks = useQuery(api.todos.getTasks)
   const updateTaskById = useMutation(api.todos.updateTask)
@@ -114,6 +114,7 @@ export default function Home() {
     setNote(taskItem.note)
     setDate(taskItem.date ? new Date(taskItem.date) : undefined)
     setTime(taskItem.time)
+    document.body.classList.add('modal-open')
   }
 
   const closeEditModal = () => {
@@ -123,6 +124,8 @@ export default function Home() {
     setNote('')
     setDate(undefined)
     setTime('')
+    document.body.classList.remove('modal-open')
+
   }
 
   const handleUpdateTask = async (id: Id<"Tasks">) => {
@@ -162,10 +165,12 @@ export default function Home() {
   const handleDeleteModal = (taskItem: any) => {
     setIsDeleteModalOpen(true)
     setTaskId(taskItem._id)
+    document.body.classList.add('modal-open')
   }
 
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false)
+    document.body.classList.remove('modal-open')
   }
 
   const handleDeleteTask = async () => {
@@ -183,6 +188,7 @@ export default function Home() {
       toast.error("Failed to delete task")
     }
   }
+
 
   return (
     <>
@@ -249,12 +255,12 @@ export default function Home() {
               <Table className="mb-8 w-full border border-collapse border-gray-300 mt-5">
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="border border-gray-300 px-2 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-base lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-bold">Task</TableHead>
-                    <TableHead className="border border-gray-300 px-2 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-base lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-bold">Note</TableHead>
-                    <TableHead className="border border-gray-300 px-2 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-base lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-bold">Date</TableHead>
-                    <TableHead className="border border-gray-300 px-2 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-base lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-bold">Time</TableHead>
-                    <TableHead className="border border-gray-300 px-2 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-base lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-bold">Status</TableHead>
-                    <TableHead className="border border-gray-300 px-2 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-base lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-bold">Action</TableHead>
+                    <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Task</TableHead>
+                    <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Note</TableHead>
+                    <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Date</TableHead>
+                    <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Time</TableHead>
+                    <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Status</TableHead>
+                    <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Action</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -281,8 +287,9 @@ export default function Home() {
             </div>
           </>
         )}
+        
         {/* edit modal */}
-        {isEditModalOpen && currentTask && (
+        {isEditModalOpen && currentTask  && (
 
           getAllTasks && getAllTasks.length > 0 && getAllTasks.map((taskItem) => (
             taskItem.nestedArray.map((taskData, index) => (
