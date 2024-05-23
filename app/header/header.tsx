@@ -31,10 +31,8 @@ export default function Header() {
                         <Button>
                             <Link href='/taskManage' className="text-sm md:text-base lg:text-lg xl:text-xl">Create task</Link>
                         </Button>
-                        <Button>
-                            <Link href='/profile' className="text-sm md:text-base lg:text-lg xl:text-xl">Profile</Link>
-                        </Button>
                         <UserButton afterSignOutUrl="/" />
+
                     </>
                 )}
             </div>
