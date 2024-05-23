@@ -14,13 +14,25 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableFooter } from "@/components/ui/table"
-import { auth } from "@clerk/nextjs/server";
 import { useUser } from "@clerk/clerk-react";
-
+import { useRouter } from "next/navigation";
 
 
 export default function TaskManage() {
     const { user } = useUser()
+    const { isLoaded, isSignedIn } = useUser()
+    const router = useRouter()
+
+    useEffect(() => {
+        if (isLoaded && !isSignedIn) {
+            router.push('/signin')
+        }
+    }, [isLoaded, isSignedIn, router])
+
+    if (!isSignedIn) {
+        //loader
+    }
+
     const [task, setTask] = useState('')
     const [note, setNote] = useState('')
     const [date, setDate] = React.useState<Date>()
