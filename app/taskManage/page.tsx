@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 
 import * as React from "react"
@@ -29,8 +30,13 @@ export default function TaskManage() {
         }
     }, [isLoaded, isSignedIn, router])
 
-    if (!isSignedIn) {
-        //loader
+    if (!isLoaded || !isSignedIn) {
+
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <span className="loading loading-spinner sm:loading-xs md:loading-md lg:loading-lg xl:loading-lg"></span>
+            </div>
+        );
     }
 
     const [task, setTask] = useState('')
@@ -216,7 +222,6 @@ export default function TaskManage() {
             toast.error("Failed to delete task")
         }
     }
-
 
     return (
         <>
