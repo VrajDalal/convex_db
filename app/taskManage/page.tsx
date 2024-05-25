@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 
@@ -7,6 +8,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
 import { useEffect, useState, useRef } from "react";
 import { Toaster, toast } from 'sonner'
+import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
@@ -20,9 +22,20 @@ import { useRouter } from "next/navigation";
 
 
 export default function TaskManage() {
-    const { user } = useUser()
-    const { isLoaded, isSignedIn } = useUser()
+    const { user, isLoaded, isSignedIn } = useUser()
     const router = useRouter()
+
+    const [task, setTask] = useState('')
+    const [note, setNote] = useState('')
+    const [date, setDate] = React.useState<Date>()
+    const [time, setTime] = useState('')
+    const [status, setStatus] = useState('')
+    const [search, setSearch] = useState('')
+    const [searchResult, setSearchResult] = useState<any[]>([])
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+    const [currentTask, setCurrentTask] = useState<{ id: Id<"Tasks">, task: string, note: string, date: string, time: string, status: string } | null>(null)
+    const [taskId, setTaskId] = useState<Id<"Tasks">>();
 
     useEffect(() => {
         if (isLoaded && !isSignedIn) {
@@ -30,30 +43,12 @@ export default function TaskManage() {
         }
     }, [isLoaded, isSignedIn, router])
 
-    if (!isLoaded || !isSignedIn) {
-
-        return (
-            <div className="flex justify-center items-center h-screen">
-                <span className="loading loading-spinner sm:loading-xs md:loading-md lg:loading-lg xl:loading-lg"></span>
-            </div>
-        );
-    }
-
-    const [task, setTask] = useState('')
-    const [note, setNote] = useState('')
-    const [date, setDate] = React.useState<Date>()
-    const [time, setTime] = useState('')
-    const [status, setStatus] = useState('')
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-    const [currentTask, setCurrentTask] = useState<{ id: Id<"Tasks">, task: string, note: string, date: string, time: string, status: string } | null>(null)
-    const [taskId, setTaskId] = useState<Id<"Tasks">>();
-
 
     const createTaskMutation = useMutation(api.todos.createTask);
     const getAllTasks = useQuery(api.todos.getTasks, { clerkUserId: user?.id || "" })
     const updateTaskById = useMutation(api.todos.updateTask)
     const deleteTaskById = useMutation(api.todos.deleteTask)
+
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -136,7 +131,7 @@ export default function TaskManage() {
         return () => {
             clearInterval(intervalId)
             clearInterval(clearNotifiedTaskInterval)
-        }// eslint-disable-next-line react-hooks/exhaustive-deps
+        }
     }, [getAllTasks, updateTaskById]);
 
 
@@ -223,6 +218,72 @@ export default function TaskManage() {
         }
     }
 
+    const searchByTask = async () => {
+
+        const searchValue = search.toLowerCase()
+        if (getAllTasks) {
+            const filterTask = getAllTasks?.filter((data) => data.task.toLowerCase().includes(searchValue))
+            setSearchResult(filterTask)
+        }
+
+        // getAllTasks?.forEach((data) => {
+        //     if (data.task.toLocaleLowerCase() === searchValue.toLocaleLowerCase()) {
+        //         console.log("True")
+        //         let result = ''
+        //         let searchValueResult = `<div className="overflow-x-auto">
+        //         <Table className="mb-8 w-full border border-collapse border-gray-300 mt-5">
+        //             <TableHeader>
+        //                 <TableRow>
+        //                     <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Task</TableHead>
+        //                     <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Note</TableHead>
+        //                     <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Date</TableHead>
+        //                     <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Time</TableHead>
+        //                     <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Status</TableHead>
+        //                     <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Action</TableHead>
+        //                 </TableRow>
+        //             </TableHeader>
+        //             <TableBody>
+        //                     <TableRow className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl">
+        //                         <TableCell className="border border-gray-300 px-2 sm:px-4 py-2">${data.task}</TableCell>
+        //                         <TableCell className="border border-gray-300 px-2 sm:px-4 py-2">${data.note}</TableCell>
+        //                         <TableCell className="border border-gray-300 px-2 sm:px-4 py-2">${data.date}</TableCell>
+        //                         <TableCell className="border border-gray-300 px-2 sm:px-4 py-2">${data.time}</TableCell>
+        //                         <TableCell className="border border-gray-300 px-2 sm:px-4 py-2">${data.status}</TableCell>
+        //                         <TableCell className="flex space-x-3">
+        //                             <Button className="px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm md:text-base lg:text-lg xl:texl-xl" onClick={() => handleEditTask({ ...taskItem, id: taskItem._id })}>Edit</Button>
+        //                             <Button className="px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm md:text-base lg:text-lg xl:texl-xl" onClick={() => handleDeleteModal({ ...taskItem, id: taskItem._id })}>Delete</Button>
+        //                         </TableCell>
+        //                     </TableRow>
+        //             </TableBody>
+        //             <TableFooter>
+
+        //             </TableFooter>
+        //         </Table>
+        //     </div>`
+        //     searchValueResult.concat(result)
+        //     } else {
+        //         toast.error("Not Found")
+        //     }
+        // })
+    }
+
+    useEffect(() => {
+        if (search) {
+            searchByTask();
+        } else {
+            setSearchResult([])
+        }
+    }, [search, getAllTasks])
+
+
+    if (!isLoaded || !isSignedIn) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <span className="loading loading-spinner sm:loading-xs md:loading-md lg:loading-lg xl:loading-lg"></span>
+            </div>
+        );
+    }
+
     return (
         <>
             <div className="mt-3 font-serif container mx-auto px-4">
@@ -278,43 +339,55 @@ export default function TaskManage() {
                         <Button className="sm:text-xl md:text-2xl lg:text-3xl">Create</Button>
                     </div>
                 </form>
+                <hr />
 
-                {getAllTasks && getAllTasks?.length > 0 && (
+                {getAllTasks && (
                     <>
                         <div>
                             <h1 id="yourTasks" className="flex font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl justify-center item-center mt-4">Your Tasks</h1>
                         </div>
-                        <div className="overflow-x-auto">
-                            <Table className="mb-8 w-full border border-collapse border-gray-300 mt-5">
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Task</TableHead>
-                                        <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Note</TableHead>
-                                        <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Date</TableHead>
-                                        <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Time</TableHead>
-                                        <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Status</TableHead>
-                                        <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Action</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {getAllTasks.map((taskItem) => (
-                                        <TableRow key={`${taskItem._id.toString()}`} className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl">
-                                            <TableCell className="border border-gray-300 px-2 sm:px-4 py-2">{taskItem.task}</TableCell>
-                                            <TableCell className="border border-gray-300 px-2 sm:px-4 py-2">{taskItem.note}</TableCell>
-                                            <TableCell className="border border-gray-300 px-2 sm:px-4 py-2">{taskItem.date}</TableCell>
-                                            <TableCell className="border border-gray-300 px-2 sm:px-4 py-2">{taskItem.time}</TableCell>
-                                            <TableCell className="border border-gray-300 px-2 sm:px-4 py-2">{taskItem.status}</TableCell>
-                                            <TableCell className="flex space-x-3">
-                                                <Button className="px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm md:text-base lg:text-lg xl:texl-xl" onClick={() => handleEditTask({ ...taskItem, id: taskItem._id })}>Edit</Button>
-                                                <Button className="px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm md:text-base lg:text-lg xl:texl-xl" onClick={() => handleDeleteModal({ ...taskItem, id: taskItem._id })}>Delete</Button>
-                                            </TableCell>
+                        {/* search */}
+                        <div className="flex items-center justify-start">
+                            <label htmlFor="txtSearch" className="font-bold md:px-4 lg:px-4">Search</label>
+                            <Input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search task...." className="mt-2 ml-3 text-lg w-1/2" onKeyUp={searchByTask} />
+                        </div>
+                        <div className="flex flex-col mt-4">
+                            {(search ? searchResult : getAllTasks).length > 0 ? (
+                                <Table className="mb-8 w-full border border-collapse border-gray-300 mt-5">
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Task</TableHead>
+                                            <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Note</TableHead>
+                                            <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Date</TableHead>
+                                            <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Time</TableHead>
+                                            <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Status</TableHead>
+                                            <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Action</TableHead>
                                         </TableRow>
-                                    ))}
-                                </TableBody>
-                                <TableFooter>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {(search ? searchResult : getAllTasks).map((taskItem) => (
+                                            <TableRow key={taskItem._id.toString()} className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl">
+                                                <TableCell className="border border-gray-300 px-2 sm:px-4 py-2">{taskItem.task}</TableCell>
+                                                <TableCell className="border border-gray-300 px-2 sm:px-4 py-2">{taskItem.note}</TableCell>
+                                                <TableCell className="border border-gray-300 px-2 sm:px-4 py-2">{taskItem.date}</TableCell>
+                                                <TableCell className="border border-gray-300 px-2 sm:px-4 py-2">{taskItem.time}</TableCell>
+                                                <TableCell className="border border-gray-300 px-2 sm:px-4 py-2">{taskItem.status}</TableCell>
+                                                <TableCell className="flex space-x-3">
+                                                    <Button className="px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm md:text-base lg:text-lg xl:texl-xl" onClick={() => handleEditTask({ ...taskItem, id: taskItem._id })}>Edit</Button>
+                                                    <Button className="px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm md:text-base lg:text-lg xl:texl-xl" onClick={() => handleDeleteModal({ ...taskItem, id: taskItem._id })}>Delete</Button>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                    <TableFooter>
 
-                                </TableFooter>
-                            </Table>
+                                    </TableFooter>
+                                </Table>
+                            ) : (
+                                <div className="text-center font-semibold mt-4 mb-4 sm:text-md md:text:md lg:text-lg">
+                                    No task found.
+                                </div>
+                            )}
                         </div>
                     </>
                 )}
