@@ -84,3 +84,16 @@
       filter: blur(5px);
     }
   }
+
+
+  .backdrop-blur-none{
+    backdrop-filter: blur(0);
+  }
+
+  .backdrop-blur-sm{
+    backdrop-filter: blur(4px);
+  }
+
+  .backdrop-blur-md{
+    backdrop-filter: blur(8px);
+  }

@@ -421,13 +421,13 @@ export default function TaskManage() {
                         <div className="bg-white rounded-lg p-6 w-full max-w-md mx-6">
                             <div className="flex justify-between items-center">
                                 <h2 className="text-xl font-semibold">Delete Task</h2>
-                                <Button variant="outline" className="flex justify-end text-2xl" onClick={closeDeleteModal}>&times;</Button>
+                                <Button variant="outline" type="button" className="flex justify-end text-2xl" onClick={closeDeleteModal}>&times;</Button>
                             </div>
                             <form>
                                 <p className="flex mt-5 font-semibold items-center justify-center md:text-lg lg:text-xl">Are you sure you want to delete</p>
                                 <div className="flex justify-center items-center mt-4 space-x-4">
-                                    <Button variant="outline" className="text-xl bg-red-300 hover:bg-red-700" onClick={closeDeleteModal}>No</Button>
-                                    <Button variant="outline" className="text-xl bg-green-300 hover:bg-green-700" onClick={handleDeleteTask}>Yes</Button>
+                                    <Button variant="outline" type="button" className="text-xl bg-red-300 hover:bg-red-700" onClick={closeDeleteModal}>No</Button>
+                                    <Button variant="outline" type="button" className="text-xl bg-green-300 hover:bg-green-700" onClick={handleDeleteTask}>Yes</Button>
                                 </div>
                             </form>
                         </div>

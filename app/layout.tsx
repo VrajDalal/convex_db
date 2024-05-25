@@ -5,6 +5,7 @@ import ConvexClientProvider from "./ConvexClientProvider";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { ClerkProvider } from "@clerk/nextjs";
 import Header from "@/app/header/header"
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {

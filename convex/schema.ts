@@ -4,8 +4,6 @@ import { v } from "convex/values";
 
 export default defineSchema({
     Tasks: defineTable({
-        id: v.optional(v.string()),
-        text: v.optional(v.string()),
         clerkUserId: v.string(),
         task: v.string(),
         note: v.string(),
