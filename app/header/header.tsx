@@ -25,7 +25,7 @@ export default function Header() {
                 </SignedOut>
                 <SignedIn>
                     <Button>
-                        <Link href='/taskmanage' className="text-sm md:text-base lg:text-lg xl:text-xl">Create task</Link>
+                        <Link href='/taskManage' className="text-sm md:text-base lg:text-lg xl:text-xl">Create task</Link>
                     </Button>
                     <UserButton afterSignOutUrl="/" />
                 </SignedIn>
