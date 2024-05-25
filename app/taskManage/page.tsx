@@ -225,46 +225,6 @@ export default function TaskManage() {
             const filterTask = getAllTasks?.filter((data) => data.task.toLowerCase().includes(searchValue))
             setSearchResult(filterTask)
         }
-
-        // getAllTasks?.forEach((data) => {
-        //     if (data.task.toLocaleLowerCase() === searchValue.toLocaleLowerCase()) {
-        //         console.log("True")
-        //         let result = ''
-        //         let searchValueResult = `<div className="overflow-x-auto">
-        //         <Table className="mb-8 w-full border border-collapse border-gray-300 mt-5">
-        //             <TableHeader>
-        //                 <TableRow>
-        //                     <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Task</TableHead>
-        //                     <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Note</TableHead>
-        //                     <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Date</TableHead>
-        //                     <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Time</TableHead>
-        //                     <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Status</TableHead>
-        //                     <TableHead className="border border-gray-300 px-1 py-1 text-sm sm:px-4 sm:py-2 sm:text-sm md:px-4 md:py-2 md:text-sm lg:px-6 lg:py-3 lg:text-lg xl:px-6 xl:py-3 xl:text-xl font-semibold">Action</TableHead>
-        //                 </TableRow>
-        //             </TableHeader>
-        //             <TableBody>
-        //                     <TableRow className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl">
-        //                         <TableCell className="border border-gray-300 px-2 sm:px-4 py-2">${data.task}</TableCell>
-        //                         <TableCell className="border border-gray-300 px-2 sm:px-4 py-2">${data.note}</TableCell>
-        //                         <TableCell className="border border-gray-300 px-2 sm:px-4 py-2">${data.date}</TableCell>
-        //                         <TableCell className="border border-gray-300 px-2 sm:px-4 py-2">${data.time}</TableCell>
-        //                         <TableCell className="border border-gray-300 px-2 sm:px-4 py-2">${data.status}</TableCell>
-        //                         <TableCell className="flex space-x-3">
-        //                             <Button className="px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm md:text-base lg:text-lg xl:texl-xl" onClick={() => handleEditTask({ ...taskItem, id: taskItem._id })}>Edit</Button>
-        //                             <Button className="px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm md:text-base lg:text-lg xl:texl-xl" onClick={() => handleDeleteModal({ ...taskItem, id: taskItem._id })}>Delete</Button>
-        //                         </TableCell>
-        //                     </TableRow>
-        //             </TableBody>
-        //             <TableFooter>
-
-        //             </TableFooter>
-        //         </Table>
-        //     </div>`
-        //     searchValueResult.concat(result)
-        //     } else {
-        //         toast.error("Not Found")
-        //     }
-        // })
     }
 
     useEffect(() => {
